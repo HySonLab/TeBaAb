@@ -1,0 +1,85 @@
+seed: 0
+device: 'cuda'
+num_samples: 20
+num_elites: 10
+num_generations: 5
+beam_size: 5
+
+data:
+  ab_embedding_path: ''
+  ag_embedding_path: ''
+  ab_description_embedding_path: ''
+  abset_path: ''
+  energy_csv_path: ''
+  batch_size: 32
+  train_size: 0.9
+  val_size: 0.1
+  seed: 42
+  num_workers: 4
+
+
+trainer:
+  gpus: 2
+  max_epochs: 100
+  model_output_dir: 'models'
+  save_top_k: 3
+  accelerator: 'cuda'
+  save_every_n_epochs: 5
+  strategy: 'ddp_find_unused_parameters_true'
+  num_nodes: 2
+
+optimizer:
+  lr: 0.001
+
+model:
+  # lr: 0.001
+  embed_dimen: 480
+  latent_dimen: 64
+  ab_dimen: 1024
+  ag_dimen: 960
+  des_dimen: 768
+  max_ab_seq_len: 256
+  reduction: 'mean'
+  use_pcgrad: 0
+  use_concat_condition: 1
+  nll_weight: 1
+  mse_weight: 1
+  kl_weight: 1
+  beta_min: 0.0
+  beta_max: 1.0
+  Kp: 0.01
+  Ki: 0.0001
+  expected_kl: 20
+
+  encoder:
+    pretrained_model_name_or_path: 'esmc'
+    access_token_read: ''
+    hidden_dim: 960
+  decoder:
+    name: 'Transformer'
+    # latent_dim: 64
+    hidden_dim: 512
+    # upsampled_dim: 480
+    num_layers: 1
+    sos_idx: 0
+    attn_method: 'general'
+    use_teacher_forcing: 0.0
+    padding_idx: 1
+    inp_dropout: 0.45
+    gru_dropout: 0.1
+  upsampler:
+    # latent_dim: 64
+    max_filter: 512
+    # low_res_dim: 64
+    min_deconv_dim: 32
+    num_deconv_layers: 3
+    kernel_size: 2
+    stride: 2
+    padding: 0
+    dropout: 0.2
+    act_type: 'relu'
+  predictor:
+    pred_hidden_dim: 256  
+    pred_dropout: 0.2
+    contrastive_model_path: 'models/contrastive_model.pt'
+    cross_attention_model_path: 'models/cross_attention_model.pt'
