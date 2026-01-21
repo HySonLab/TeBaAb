@@ -4,6 +4,11 @@
     <img src="docs/TeBaAb.png" width="400">
 </p>
 
+An earlier version of this work was presented at NeurIPS 2025 workshops as a non-archival presentation:
+- AI for Science: https://openreview.net/pdf?id=Imw5NGMgje
+- Machine Learning and the Physical Sciences: https://ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_107.pdf 
+
+
 ## Abstract
 The design of antibodies with high affinity and specificity for target antigens is a cornerstone of therapeutic and diagnostic innovation. 
 Traditional optimization strategies, such as phage or yeast display and directed evolution, remain resource-intensive and limited in their ability to integrate contextual information. 
@@ -133,11 +138,12 @@ Generate and optimize protein sequences using directed evolution:
 ## Please cite our work
 
 ```bibtex
-@article {,
-	author = {Cuong Manh Nguyen, Huy-Hoang Do-Huu, Viet Thanh Duy Nguyen and Truong-Son Hy},
-	title = {TeBaAb: Text-Based Antigen-Conditioned Antibody Redesign via Directed Evolution},
-	year = {2025},
-	URL = {},
-	eprint = {}
+@inproceedings{
+nguyen2025tebaab,
+title={TeBaAb: Text-Based Antigen-Conditioned Antibody Redesign via Directed Evolution},
+author={Cuong Manh Nguyen and Huy-Hoang Do-Huu and Viet Thanh Duy Nguyen and Truong-Son Hy},
+booktitle={NeurIPS 2025 AI for Science Workshop},
+year={2025},
+url={https://openreview.net/forum?id=Imw5NGMgje}
 }
 ```
