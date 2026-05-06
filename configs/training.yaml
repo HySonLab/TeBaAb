@@ -11,6 +11,9 @@ data:
   val_size: 0.1
   seed: 42
   num_workers: 4
+  # text_mode controls the text ablation experiment.
+  # Options: real | shuffle | random | zero
+  text_mode: 'real'
 
 
 trainer:

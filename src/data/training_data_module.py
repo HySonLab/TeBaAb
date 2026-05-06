@@ -58,10 +58,13 @@ class TrainingDataModule(LightningDataModule):
         self.low_res_dim = math.ceil(self.max_len / cfg.model.upsampler.stride ** cfg.model.upsampler.num_deconv_layers)
         self.max_len = self.low_res_dim * cfg.model.upsampler.stride ** cfg.model.upsampler.num_deconv_layers
 
+        text_mode = cfg.data.get("text_mode", "real")
         self.dataset = TraningDataset(ag_embedding_path=self.ag_embedding_path,
                                       ab_embedding_path=self.ab_embedding_path,
                                       ab_description_embedding_path=self.ab_description_embedding_path,
-                                      abset_path=self.abset_path)
+                                      abset_path=self.abset_path,
+                                      text_mode=text_mode,
+                                      seed=self.seed)
         self.dataset_size = len(self.dataset)
 
         self.train_size = int(cfg.data.train_size * self.dataset_size)

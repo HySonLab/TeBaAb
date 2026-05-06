@@ -37,8 +37,8 @@ class TransformerDecoder(nn.Module):
         self.max_len = self.low_res_dim * cfg.model.upsampler.stride ** cfg.model.upsampler.num_deconv_layers
         self.use_teacher_forcing = cfg.model.decoder.use_teacher_forcing
 
-        # Combined dimension for latent and conditions
-        self.combined_dim = self.latent_dim + self.ag_dimen
+        # Combined dimension: latent + antigen + text description
+        self.combined_dim = self.latent_dim + self.ag_dimen + self.des_dimen
 
         # Project combined latent and conditions to sequence hidden states
         self.input_projection = nn.Linear(self.combined_dim, self.max_len * self.hidden_dim)
@@ -89,8 +89,8 @@ class TransformerDecoder(nn.Module):
         batch = latent.size(0)
         device = latent.device
 
-        # Concatenate latent and condition representations
-        combined_input = torch.cat([latent, ag_rep], dim=-1)  # [batch, combined_dim]
+        # Concatenate latent, antigen, and text description representations
+        combined_input = torch.cat([latent, ag_rep, des_rep], dim=-1)  # [batch, combined_dim]
 
         # Project to sequence hidden states
         hidden = self.input_projection(combined_input)  # [batch, max_len * hidden_dim]
