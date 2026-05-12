@@ -7,12 +7,13 @@ data:
   ab_description_embedding_path: ''
   abset_path: ''
   batch_size: 32
-  train_size: 0.9
+  # Split ratios must sum to 1.0.
+  # Set test_size > 0 to enable a held-out test split used by optimize.py.
+  train_size: 0.8
   val_size: 0.1
-  seed: 42
+  test_size: 0.1
   num_workers: 4
-  # text_mode controls the text ablation experiment.
-  # Options: real | shuffle | random | zero
+  # text_mode: real | shuffle | random | zero  (inference-time ablation)
   text_mode: 'real'
 
 
@@ -40,6 +41,9 @@ model:
   reduction: 'mean'
   use_pcgrad: 0
   use_concat_condition: 1
+  # use_description: 1 → encoder and decoder both use text description (trains best_w_des.ckpt)
+  # use_description: 0 → text description ignored entirely (trains best_wo_des.ckpt)
+  use_description: 1
   nll_weight: 1
   mse_weight: 1
   kl_weight: 1

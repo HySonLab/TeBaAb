@@ -45,6 +45,7 @@ class CVAE(LightningModule):
         self.latent_dim = cfg.model.latent_dimen  # Latent space dimensionality
         self.max_len = cfg.model.max_ab_seq_len  # Maximum antibody sequence length
         self.use_concat_condition = cfg.model.use_concat_condition  # Whether to concatenate all conditions
+        self.use_description = bool(cfg.model.get("use_description", 1))
 
         # Calculate low resolution dimension for upsampling
         self.low_res_dim = math.ceil(
@@ -117,6 +118,8 @@ class CVAE(LightningModule):
             if self.use_concat_condition
             else cfg.model.ab_dimen
         )
+        if self.use_description:
+            combined_dim += cfg.model.des_dimen
 
         # Initialize latent encoder
         self.latent_encoder = LatentEncoder(self.latent_dim, combined_dim)
@@ -144,11 +147,12 @@ class CVAE(LightningModule):
         """
         z_ab_rep = ab_emb
         if self.use_concat_condition:
-            # Concatenate all representations
-            combined_rep = torch.cat([z_ab_rep, ag_emb], dim=-1)  # [batch, combined_dim]
+            combined_rep = torch.cat([z_ab_rep, ag_emb], dim=-1)
             logger.debug(f"Combined representation shape: {combined_rep.shape}")
         else:
             combined_rep = z_ab_rep  # [batch, ab_dimen]
+        if self.use_description:
+            combined_rep = torch.cat([combined_rep, des_emb], dim=-1)
 
         # Encode to latent space
         z, mu, logsigma = self.latent_encoder(combined_rep)

@@ -59,27 +59,74 @@ class TrainingDataModule(LightningDataModule):
         self.max_len = self.low_res_dim * cfg.model.upsampler.stride ** cfg.model.upsampler.num_deconv_layers
 
         text_mode = cfg.data.get("text_mode", "real")
-        self.dataset = TraningDataset(ag_embedding_path=self.ag_embedding_path,
-                                      ab_embedding_path=self.ab_embedding_path,
-                                      ab_description_embedding_path=self.ab_description_embedding_path,
-                                      abset_path=self.abset_path,
-                                      text_mode=text_mode,
-                                      seed=self.seed)
-        self.dataset_size = len(self.dataset)
+        self.dataset = TraningDataset(
+            ag_embedding_path=self.ag_embedding_path,
+            ab_embedding_path=self.ab_embedding_path,
+            ab_description_embedding_path=self.ab_description_embedding_path,
+            abset_path=self.abset_path,
+            text_mode=text_mode,
+            seed=self.seed,
+        )
+        n = len(self.dataset)
 
-        self.train_size = int(cfg.data.train_size * self.dataset_size)
-        self.val_size = self.dataset_size - self.train_size
+        # Three-way split. test_size defaults to 0 (backward-compatible: no test split).
+        test_ratio = float(cfg.data.get("test_size", 0.0))
+        val_ratio = float(cfg.data.val_size)
+
+        self.test_n = int(test_ratio * n)
+        self.val_n = int(val_ratio * n)
+        self.train_n = n - self.val_n - self.test_n
+        assert self.train_n > 0, (
+            f"train_n={self.train_n} must be > 0 "
+            f"(total={n}, val={self.val_n}, test={self.test_n})"
+        )
+
         self.train_dataset = None
         self.val_dataset = None
+        self.test_dataset = None
 
     def setup(self, stage=None):
-        self.train_dataset, self.val_dataset = random_split(self.dataset, lengths=[self.train_size, self.val_size],
-                                                            generator=torch.Generator().manual_seed(self.seed))
+        generator = torch.Generator().manual_seed(self.seed)
+        if self.test_n > 0:
+            self.train_dataset, self.val_dataset, self.test_dataset = random_split(
+                self.dataset,
+                [self.train_n, self.val_n, self.test_n],
+                generator=generator,
+            )
+        else:
+            self.train_dataset, self.val_dataset = random_split(
+                self.dataset,
+                [self.train_n, self.val_n],
+                generator=generator,
+            )
+            # No explicit test split: expose full dataset for optimization scripts.
+            self.test_dataset = self.dataset
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=True,
-                          collate_fn=CustomCollateFn(), persistent_workers=True)
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            shuffle=True,
+            collate_fn=CustomCollateFn(),
+            persistent_workers=True,
+        )
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=False,
-                          collate_fn=CustomCollateFn(), persistent_workers=True)
+        return DataLoader(
+            self.val_dataset,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            shuffle=False,
+            collate_fn=CustomCollateFn(),
+            persistent_workers=True,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            self.test_dataset,
+            batch_size=1,
+            num_workers=self.num_workers,
+            shuffle=False,
+            collate_fn=CustomCollateFn(),
+        )

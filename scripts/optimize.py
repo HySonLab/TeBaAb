@@ -1,8 +1,6 @@
 import os
 import sys
 
-from streamlit import success
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from copy import deepcopy
@@ -14,12 +12,9 @@ from lightning import seed_everything
 from omegaconf import DictConfig
 import pandas as pd
 import csv
-import yaml
-from omegaconf import OmegaConf
 import rootutils
 import time
 from typing import List
-from torch.utils.data import DataLoader
 from src.models.modules.predictor import ContrastiveModel
 from src.models.modules.predictor import CrossAttentionModel
 from src.models.modules.seqEncoder import IgBertEncoder
@@ -138,9 +133,9 @@ def perform_directed_evolution(output_folder, opt_ab_seqs, ag_emb, des_emb,
     batch_size = cfg.recon_wt_batch
     init_scores = calc_fitness(opt_ab_seqs, ag_emb, ab_encoder, aff_predictor)
 
-    # sort the initial sequences by their scores
+    # sort the initial sequences by their scores (ascending: lower ΔG = better)
     items = list(zip(opt_ab_seqs, init_scores))
-    items.sort(key=lambda x: x[1], reverse=True)
+    items.sort(key=lambda x: x[1])
 
     items = items[:cfg.num_elites]
     cur_items = items
@@ -189,22 +184,16 @@ def optimize(cfg: DictConfig) -> None:
 
     cvae, aff_predictor, ab_encoder = load_and_initialize_models(cfg)
 
-    df = pd.read_csv(os.path.join(root, cfg.data.abset_path))
-
-    # delta_g = df['delta_g'].values.astype(np.float32)
-    # delta_g_min = delta_g.min()
-    # delta_g_max = delta_g.max()
-
-    # Initialize the data module with the loaded config
+    # Build data module and use the test split for optimization.
     data_module = TrainingDataModule(cfg)
-    full_loader = DataLoader(data_module.dataset, batch_size=1, num_workers=data_module.num_workers, shuffle=False,
-                             collate_fn=CustomCollateFn())
+    data_module.setup()
+    full_loader = data_module.test_dataloader()
 
     # directed evolution
     for i, data in enumerate(full_loader):
         gc.collect()
         torch.cuda.empty_cache()
-        pdb_id, ab_seq, ag_seq, ab_emb, ag_emb, des_emb, orig_fitness = extract_info(df, data)
+        pdb_id, ab_seq, ag_seq, ab_emb, ag_emb, des_emb, orig_fitness = extract_info(data)
 
         # denormalize the delta_g value
         orig_fitness = orig_fitness  # * (delta_g_max - delta_g_min) + delta_g_min
@@ -254,20 +243,27 @@ def calculate_original_predictor_fitness(aff_predictor, ab_emb, ag_emb):
     return original_predictor_fitness
 
 
-def extract_info(df, data):
+def extract_info(data):
     pdb_id = data['pdb_id'][0]
     ab_seq = data["ab_sequences"][0]
     ag_seq = data["ag_sequences"][0]
-
     ab_emb = data["ab_embedding"].to("cuda")
     ag_emb = data["ag_embedding"].to("cuda")
     des_emb = data["des_embedding"].to("cuda")
-    orig_fitness = 0.0  # float(df[df['pdb_id'] == pdb_id]['delta_g'].iloc[0])
-    return pdb_id, ab_seq, ag_seq, ab_emb, ag_emb, des_emb, orig_fitness
+    return pdb_id, ab_seq, ag_seq, ab_emb, ag_emb, des_emb, 0.0
 
 
 def load_and_initialize_models(cfg):
-    cvae = CVAE.load_from_checkpoint(os.path.join(root, cfg.model_path), cfg=cfg)  # load model
+    # Auto-select checkpoint based on use_description when model_path is not explicitly set.
+    explicit_path = cfg.get("model_path", None)
+    if explicit_path:
+        ckpt_path = explicit_path
+    elif cfg.model.get("use_description", 1):
+        ckpt_path = cfg.get("model_path_w_des", "checkpoints/cvae/best_w_des.ckpt")
+    else:
+        ckpt_path = cfg.get("model_path_wo_des", "checkpoints/cvae/best_wo_des.ckpt")
+
+    cvae = CVAE.load_from_checkpoint(os.path.join(root, ckpt_path), cfg=cfg)
     cvae.eval()
 
     proj_model = ContrastiveModel(ab_embed_dim=cfg.model.ab_dimen, ag_embed_dim=cfg.model.ag_dimen,

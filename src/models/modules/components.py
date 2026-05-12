@@ -114,7 +114,7 @@ class LatentEncoder(nn.Module):
     def forward(self, hidden: Tensor):
         mu = self.linear_mu(hidden)
         logsigma = self.linear_logsigma(hidden)
-        eps = torch.rand_like(mu)
+        eps = torch.randn_like(mu)
         z = mu + eps * torch.exp(logsigma * 0.5)
         return z, mu, logsigma
 

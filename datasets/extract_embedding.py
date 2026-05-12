@@ -96,10 +96,10 @@ def get_ab_emb(df: pd.DataFrame, args: argparse.Namespace):
     device = get_device(args.device)
 
     try:
-        tokenizer = BertTokenizer.from_pretrained(args.igbert_cache, do_lower_case=False)
-        model = BertModel.from_pretrained(args.igbert_cache, add_pooling_layer=False).to(device).eval()
+        tokenizer = BertTokenizer.from_pretrained(args.igbert_model, do_lower_case=False)
+        model = BertModel.from_pretrained(args.igbert_model, add_pooling_layer=False).to(device).eval()
     except Exception as e:
-        print(f"Error loading IgBert model from {args.igbert_cache}: {e}")
+        print(f"Error loading IgBert model from {args.igbert_model}: {e}")
         print("Please ensure 'Exscientia/IgBert' is downloaded or the path is correct.")
         return
 
@@ -173,10 +173,10 @@ def get_text_emb(df: pd.DataFrame, args: argparse.Namespace):
     device = get_device(args.device)
 
     try:
-        tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased", cache_dir=args.scibert_cache)
-        model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased", cache_dir=args.scibert_cache).to(device).eval()
+        tokenizer = AutoTokenizer.from_pretrained(args.scibert_model)
+        model = AutoModel.from_pretrained(args.scibert_model).to(device).eval()
     except Exception as e:
-        print(f"Error loading SciBert model from {args.scibert_cache}: {e}")
+        print(f"Error loading SciBert model: {e}")
         print("Please ensure 'allenai/scibert_scivocab_uncased' is downloaded or the path is correct.")
         return
 
@@ -236,9 +236,9 @@ def main():
     # --- Model Cache Arguments ---
     parser.add_argument("--esmc_cache", type=Path, required=True,
                         help="Path to the .pth file for the ESMC model.")
-    parser.add_argument("--scibert_cache", type=Path, required=True,
+    parser.add_argument("--scibert_model", type=Path, required=True, default="allenai/scibert_scivocab_uncased",
                         help="Path to the cache directory for SciBert (allenai/scibert_scivocab_uncased).")
-    parser.add_argument("--igbert_cache", type=Path, required=True,
+    parser.add_argument("--igbert_model", type=Path, required=True, default="Exscientia/IgBert",
                         help="Path to the cache directory for IgBert (Exscientia/IgBert).")
 
     # --- Configuration Arguments ---
@@ -264,7 +264,7 @@ def main():
 
     print(f"Processing file: {args.input_csv}")
     print(f"Output directory: {args.output_dir}")
-    print(f"Models paths: ESMC='{args.esmc_cache}', SciBert='{args.scibert_cache}', IgBert='{args.igbert_cache}'")
+    print(f"Models paths: ESMC='{args.esmc_cache}', SciBert='{args.scibert_model}', IgBert='{args.igbert_model}'")
     print(f"Config: Modality='{args.modality}', Embedding Type='{args.embedding_type}', Device='{args.device}'")
 
     # --- Run Embedding Generation ---
