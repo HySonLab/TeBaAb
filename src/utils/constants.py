@@ -6,7 +6,7 @@ CANONICAL_ALPHABET = [
     'M', 'N', 'P', 'Q', 'R',
     'S', 'T', 'V', 'W', 'Y', '|'  # '|' is used to represent <sep> in the middle of sequences
 ]
-SPECIAL_SYMBOLS = ["<unk>", "<pad>", "<sos>", "<eos>"]
+SPECIAL_SYMBOLS = ["<unk>", "<pad>", "<sos>", "<eos>", "<mask>"]
 
 VOCAB = SPECIAL_SYMBOLS + CANONICAL_ALPHABET
 

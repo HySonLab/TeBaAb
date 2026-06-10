@@ -58,6 +58,8 @@ By enabling text-conditioned antigen-specific antibody design, TeBaAb provides a
 
 2. Set up a virtual environment and install dependencies:
     ```bash
+    conda create -n tebaab python=3.10
+
     conda env create -f environment.yml 
     ```
     or

@@ -55,7 +55,7 @@ def get_antigen_emb(df: pd.DataFrame, args: argparse.Namespace):
         if pd.isna(ag):
             continue
         with torch.no_grad():
-            batch = tokenizer.batch_encode_plus(
+            batch = tokenizer(
                 [ag],
                 padding="max_length",
                 truncation=True,
@@ -123,7 +123,7 @@ def get_ab_emb(df: pd.DataFrame, args: argparse.Namespace):
     for i, seq in tqdm(enumerate(paired_sequences), desc="Antibody Embeddings", total=len(paired_sequences)):
         with torch.no_grad():
             try:
-                tokens = tokenizer.batch_encode_plus(
+                tokens = tokenizer(
                     [seq],
                     add_special_tokens=True,
                     padding="max_length",  # Use padding="max_length"
@@ -187,8 +187,9 @@ def get_text_emb(df: pd.DataFrame, args: argparse.Namespace):
 
     embeddings = {}
     for i, (desc, pdb_id) in tqdm(enumerate(zip(descriptions, pdb_ids)), desc="Text Embeddings", total=len(pdb_ids)):
-        if pd.isna(desc):
-            continue
+        # Replace NaN or entirely blank values with an empty string
+        if pd.isna(desc) or not str(desc).strip():
+            desc = "" 
 
         with torch.no_grad():
             try:

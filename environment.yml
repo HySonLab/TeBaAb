@@ -169,7 +169,7 @@ dependencies:
     - decorator==5.2.1
     - decord==0.6.0
     - deepdiff==8.5.0
-    - deepspeed==0.17.2+da60a878
+    # - deepspeed==0.17.2+da60a878
     - delta-center-client==0.0.4
     - dill==0.3.8
     - distlib==0.3.9
@@ -260,7 +260,7 @@ dependencies:
     - omegaconf==2.3.0
     - opencv-python-headless==4.5.5.64
     - opendatasets==0.1.22
-    - opendelta==0.3.2
+    # - opendelta==0.3.2
     - orderly-set==5.4.1
     - oss2==2.15.0
     - packaging==24.2
@@ -311,9 +311,9 @@ dependencies:
     - rouge-score==0.1.2
     - rpds-py==0.26.0
     - safetensors==0.5.3
-    - salesforce-lavis==1.0.2
-    - scikit-image==0.25.2
-    - scikit-learn==1.6.1
+    # - salesforce-lavis==1.0.2
+    # - scikit-image==0.25.2
+    # - scikit-learn==1.6.1
     - seaborn==0.13.2
     - sentencepiece==0.2.0
     - sentry-sdk==2.29.1
@@ -341,9 +341,9 @@ dependencies:
     - tokenizers==0.21.1
     - toml==0.10.2
     - torch==2.6.0
-    - torch-cluster==1.6.3+pt26cu124
+    # - torch-cluster==1.6.3+pt26cu124
     - torch-geometric==2.6.1
-    - torch-scatter==2.1.2+pt26cu124
+    # - torch-scatter==2.1.2+pt26cu124
     - torchmetrics==0.9.3
     - torchtext==0.18.0
     - torchvision==0.21.0
