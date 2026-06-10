@@ -174,10 +174,13 @@ class AntibodyMaskedInference:
         self._load_model(checkpoint_path)
 
         # Load data
-        test_csv_path = test_csv_path or self.cfg.get("test_csv_path", "../datasets/abdes/test.csv")
-        description_pkl_path = description_pkl_path or self.cfg.get("description_pkl_path", "../datasets/abdes/test_description.pkl")
-        antigen_pkl_path = antigen_pkl_path or self.cfg.get("antigen_pkl_path", "../datasets/abdes/test_antigen.pkl")
+        # 1. Safely grab the 'data' subset of your config (default to empty dict if missing)
+        data_cfg = self.cfg.get("data", {})
 
+        # 2. Get the specific paths using the correct YAML keys
+        test_csv_path = test_csv_path or data_cfg.get("test_csv", "../datasets/abdes/test.csv")
+        description_pkl_path = description_pkl_path or data_cfg.get("ab_description_embedding_path", "../datasets/abdes/.pkl")
+        antigen_pkl_path = antigen_pkl_path or data_cfg.get("ag_embedding_path", "../datasets/abdes/.pkl")
         sequence_df = self._load_sequences(test_csv_path)
         des_embs = self._load_embeddings(description_pkl_path)
         antigen_embs = self._load_embeddings(antigen_pkl_path)

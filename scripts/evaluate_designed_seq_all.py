@@ -79,28 +79,28 @@ if __name__ == "__main__":
     
     configs = [
         # 1. Baseline
-        # {"name": "Baseline - Heavy", "in": "results_heavy_2.csv", "out": "evaluated_results_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        # {"name": "Baseline - Light", "in": "results_light_2.csv", "out": "evaluated_results_light.csv", "gt": "gt_light", "des": "designed_light"},
-        
-        # # 2. With Chain Description
-        # {"name": "Chain Desc - Heavy", "in": "results_w_chain_desc_heavy.csv", "out": "evaluated_results_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        # {"name": "Chain Desc - Light", "in": "results_w_chain_desc_light.csv", "out": "evaluated_results_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
-        
-        # # 3. Full Description + Chain Description
-        # {"name": "Full Desc - Heavy", "in": "results_full_desc_w_chain_desc_heavy.csv", "out": "evaluated_results_full_desc_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        # {"name": "Full Desc - Light", "in": "results_full_desc_w_chain_desc_light.csv", "out": "evaluated_results_full_desc_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
-        
-        
-        {"name": "PDB_desc - Heavy", "in": "results_swissisolated_heavy.csv", "out": "evaluated_results_swissisolated_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        {"name": "PDB_desc - Light", "in": "results_swissisolated_light.csv", "out": "evaluated_results_swissisolated_light.csv", "gt": "gt_light", "des": "designed_light"},
+        {"name": "Baseline - Heavy", "in": "results_pdb_heavy.csv", "out": "evaluated_results_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        {"name": "Baseline - Light", "in": "results_pdb_light.csv", "out": "evaluated_results_light.csv", "gt": "gt_light", "des": "designed_light"},
         
         # 2. With Chain Description
-        {"name": "SwissProt - Heavy", "in": "results_swissisolated_w_chain_desc_heavy.csv", "out": "evaluated_results_swissisolated_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        {"name": "SwissProt - Light", "in": "results_swissisolated_w_chain_desc_light.csv", "out": "evaluated_results_swissisolated_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
+        {"name": "Chain Desc - Heavy", "in": "results_swiss_desc_heavy.csv", "out": "evaluated_results_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        {"name": "Chain Desc - Light", "in": "results_swiss_desc_light.csv", "out": "evaluated_results_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
         
         # 3. Full Description + Chain Description
-        {"name": "PDB_desc + SwissProt - Heavy", "in": "results_swissisolated_full_desc_w_chain_desc_heavy.csv", "out": "evaluated_results_swissisolated_full_desc_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
-        {"name": "PDB_desc + SwissProt - Light", "in": "results_swissisolated_full_desc_w_chain_desc_light.csv", "out": "evaluated_results_swissisolated_full_desc_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
+        {"name": "Full Desc - Heavy", "in": "results_both_desc_heavy.csv", "out": "evaluated_results_full_desc_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        {"name": "Full Desc - Light", "in": "results_both_desc_light.csv", "out": "evaluated_results_full_desc_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
+        
+        
+        # {"name": "PDB_desc - Heavy", "in": "results_swissisolated_heavy.csv", "out": "evaluated_results_swissisolated_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        # {"name": "PDB_desc - Light", "in": "results_swissisolated_light.csv", "out": "evaluated_results_swissisolated_light.csv", "gt": "gt_light", "des": "designed_light"},
+        
+        # # 2. With Chain Description
+        # {"name": "SwissProt - Heavy", "in": "results_swissisolated_w_chain_desc_heavy.csv", "out": "evaluated_results_swissisolated_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        # {"name": "SwissProt - Light", "in": "results_swissisolated_w_chain_desc_light.csv", "out": "evaluated_results_swissisolated_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
+        
+        # # 3. Full Description + Chain Description
+        # {"name": "PDB_desc + SwissProt - Heavy", "in": "results_swissisolated_full_desc_w_chain_desc_heavy.csv", "out": "evaluated_results_swissisolated_full_desc_w_chain_desc_heavy.csv", "gt": "gt_heavy", "des": "designed_heavy"},
+        # {"name": "PDB_desc + SwissProt - Light", "in": "results_swissisolated_full_desc_w_chain_desc_light.csv", "out": "evaluated_results_swissisolated_full_desc_w_chain_desc_light.csv", "gt": "gt_light", "des": "designed_light"},
 
     ]
     
